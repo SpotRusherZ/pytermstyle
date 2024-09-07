@@ -1,6 +1,6 @@
 from __future__ import annotations
 
-from typing import Literal, Union
+from typing import Literal, Union, TypedDict
 
 TextStyle = Literal[
   "bold",
@@ -50,3 +50,14 @@ ColorMode = Literal[
 ]
 
 Colors4Bit = dict[Color, dict[ColorMode, str]]
+
+# Settings Types
+
+class ColorOptions(TypedDict, total=False):
+  rgb: list[str]
+  color: str
+
+class TermOptions(TypedDict, total=False):
+  style: list[str]
+  foreground: ColorOptions
+  background: ColorOptions

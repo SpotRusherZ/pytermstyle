@@ -2,8 +2,12 @@ from __future__ import annotations
 
 from .custom_types import TextStyle, Color, Colors
 
-base = "\033["
-reset = "\033[0m"
+BASE = "\033["
+RESET = "\033[0m"
+FG_RGB_CODE = ["38", "2"]
+BG_RGB_CODE = ["48", "2"]
+FG_COLOR_CODE = ["38", "5"]
+BG_COLOR_CODE = ["48", "5"]
 
 textStyles: dict[TextStyle, str] = {
   "bold": "1",

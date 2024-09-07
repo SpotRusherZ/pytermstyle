@@ -58,6 +58,6 @@ class ColorOptions(TypedDict, total=False):
   color: str
 
 class TermOptions(TypedDict, total=False):
-  style: list[str]
+  style: list[TextStyle]
   foreground: ColorOptions
   background: ColorOptions

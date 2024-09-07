@@ -3,8 +3,9 @@ from __future__ import annotations
 from typing import Any, Optional
 
 from .custom_types import TextStyle, ColorMode, Color, Colors
-from .definitions import base, reset, textStyles
-from .utils import is_rgb_valid, get_4bit_color_code, get_8bit_color_code
+from .definitions import BASE, RESET, FG_RGB_CODE, BG_RGB_CODE, FG_COLOR_CODE, BG_COLOR_CODE, textStyles
+from .settings import TermSettings, Settings
+from .utils import is_rgb_valid, get_4bit_color_code, get_8bit_color_code, is_valid_color
 
 """ANSI color formatting for output in terminal."""
 
@@ -40,60 +41,55 @@ def _make_color_method(name, mode: ColorMode):
     return color_method
 
 class TermStyle:
-  DEFAULT_FG_RGB = ["38", "2"]
-  DEFAULT_BG_RGB = ["48", "2"]
-  DEFAULT_FG_COLOR = ["38", "5"]
-  DEFAULT_BG_COLOR = ["48", "5"]
-
-  def __init__(self) -> None:
-    self._styles: set[TextStyle] = set()
-    self._fg_color: Optional[str] = None
-    self._bg_color: Optional[str] = None
-    self._fg_8bit_color: list[str] = list(TermStyle.DEFAULT_FG_COLOR)
-    self._bg_8bit_color: list[str] = list(TermStyle.DEFAULT_BG_COLOR)
-    self._fg_rgb: list[str] = list(TermStyle.DEFAULT_FG_RGB)
-    self._bg_rgb: list[str] = list(TermStyle.DEFAULT_BG_RGB)
+  def __init__(self, settings: Optional[Settings] = None) -> None:
+    self._default_settings = TermSettings(settings)
+    self._override_settings = TermSettings()
 
   def add_style(self, style: TextStyle):
-    self._styles.add(style)
+    self._override_settings.add_style(style)
 
   def add_color(self, color: Color, mode: ColorMode):
-    color_code = get_4bit_color_code(color, mode)
+    self._override_settings.add_color(color, mode)
 
-    if mode == "background":
-      self._bg_color = color_code
-    else:
-      self._fg_color = color_code
-  
+  def _set_color_code(self, settings: TermSettings, mode: ColorMode) -> Optional[str]:
+    color = settings.rgb(mode)
+    if color:
+      rgb_code = FG_RGB_CODE if mode == "foreground" else BG_RGB_CODE
+      return ";".join(rgb_code + color)
+
+    color = settings.color(mode)
+    if color:
+      base_code = FG_COLOR_CODE if mode == "foreground" else BG_COLOR_CODE
+      color_code = get_8bit_color_code(color)
+
+      if color_code:
+        return ";".join(base_code + [color_code])
+
+    return None
+
   def print(self, text: Optional[str], clear: bool = True, **kwargs):
     if text:
-      styles = ";".join([textStyles[style] for style in self._styles])
+      settings = self._override_settings \
+        if self._override_settings.has_settings() \
+        else self._default_settings
 
-      foreground = self._fg_color
-      if not foreground:
-        foreground = ";".join(self._fg_8bit_color) if len(self._fg_8bit_color) > 2 else None
-      if not foreground:
-        foreground = ";".join(self._fg_rgb) if len(self._fg_rgb) > 2 else None
-
-      background = self._bg_color
-      if not background:
-        background = ";".join(self._bg_8bit_color) if len(self._bg_8bit_color) > 2 else None
-      if not background:
-        background = ";".join(self._bg_rgb) if len(self._bg_rgb) > 2 else None
+      styles = ";".join([textStyles[style] for style in settings.styles()])
+      foreground = self._set_color_code(settings, "foreground")
+      background = self._set_color_code(settings, "background")
 
       fmt = ";".join([style for style in [styles, foreground, background] if style])
 
       fmt_text = "{base}{fmt}m{text}{reset}".format(
-        base=base,
+        base=BASE,
         fmt=fmt,
         text=text,
-        reset=reset
+        reset=RESET
       )
 
       print(fmt_text, **kwargs)
 
     if clear:
-      self.reset()
+      self._override_settings.clear()
 
     return self
   
@@ -105,15 +101,6 @@ class TermStyle:
       return self
 
     return self.print(text, clear, **kwargs)
-  
-  def reset(self):
-    self._styles = set()
-    self._bg_color = None
-    self._fg_color = None
-    self._fg_rgb = list(TermStyle.DEFAULT_FG_RGB)
-    self._bg_rgb = list(TermStyle.DEFAULT_BG_RGB)
-    self._fg_8bit_color = list(TermStyle.DEFAULT_FG_COLOR)
-    self._bg_8bit_color = list(TermStyle.DEFAULT_BG_COLOR)
   
   """Methods for styling"""
   bold = _make_style_method("bold")
@@ -149,21 +136,17 @@ class TermStyle:
 
   """Extended Colors"""
   def fg_color(self, color: Colors, *, text: Optional[str] = None, clear: bool = True, **kwargs):
-    color_code = get_8bit_color_code(color)
-
-    if not color_code:
+    if not is_valid_color(color):
       raise ColorException("Invalid value for color: {}".format(color))
 
-    self._fg_8bit_color.append(color_code)
+    self._override_settings.add_color(color, "foreground")
     return self._output(text, clear, **kwargs)
   
   def bg_color(self, color: Colors, *, text: Optional[str] = None, clear: bool = True, **kwargs):
-    color_code = get_8bit_color_code(color)
-
-    if not color_code:
+    if not is_valid_color(color):
       raise ColorException("Invalid value for color: {}".format(color))
 
-    self._bg_8bit_color.append(color_code)
+    self._override_settings.add_color(color, "background")
     return self._output(text, clear, **kwargs)
 
   """16-bit RGB"""
@@ -173,7 +156,7 @@ class TermStyle:
     if not is_rgb_valid(rgb):
       raise ColorException("Provided values for RGB must be 0 <= color <= 255")
     
-    self._fg_rgb.extend(rgb)
+    self._override_settings.add_rgb(rgb, "foreground")
     return self._output(text, clear, **kwargs)
   
   def bg_rgb(self, r: int, g: int, b: int, *, text: Optional[str] = None, clear: bool = True, **kwargs):
@@ -182,9 +165,10 @@ class TermStyle:
     if not is_rgb_valid(rgb):
       raise ColorException("Provided values for RGB must be 0 <= color <= 255")
 
-    self._bg_rgb.extend(rgb)
+    self._override_settings.add_rgb(rgb, "background")
     return self._output(text, clear, **kwargs)
 
+# This needs to be reworked - want base functionality on import
 _root: Optional[TermStyle] = None
 
 def init_root():

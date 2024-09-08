@@ -5,7 +5,7 @@ from typing import Any, Optional
 from .custom_types import TextStyle, ColorMode, Color, Colors
 from .definitions import BASE, RESET, FG_RGB_CODE, BG_RGB_CODE, FG_COLOR_CODE, BG_COLOR_CODE, textStyles
 from .settings import TermSettings, Settings
-from .utils import is_rgb_valid, get_4bit_color_code, get_8bit_color_code, is_valid_color
+from .utils import is_rgb_valid, get_8bit_color_code, is_valid_color
 
 """ANSI color formatting for output in terminal."""
 
@@ -44,6 +44,9 @@ class TermStyle:
   def __init__(self, settings: Optional[Settings] = None) -> None:
     self._default_settings = TermSettings(settings)
     self._override_settings = TermSettings()
+
+  def configure(self, settings: Optional[Settings] = None):
+    self._default_settings = TermSettings(settings)
 
   def add_style(self, style: TextStyle):
     self._override_settings.add_style(style)
@@ -168,13 +171,18 @@ class TermStyle:
     self._override_settings.add_rgb(rgb, "background")
     return self._output(text, clear, **kwargs)
 
-# This needs to be reworked - want base functionality on import
-_root: Optional[TermStyle] = None
 
-def init_root():
-  global _root
+_root = TermStyle()
 
-  if not _root:
-    _root = TermStyle()
+def get_default_logger():
+  return _root
+
+def init_config(settings: Optional[Settings] = None):
+  _root.configure(settings)
 
   return _root
+
+def create_logger(settings: Optional[Settings] = None):
+  logger = TermStyle(settings)
+
+  return logger

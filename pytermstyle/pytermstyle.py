@@ -1,5 +1,8 @@
 from __future__ import annotations
 
+import io
+import os
+import sys
 from typing import Any, Optional
 
 from .custom_types import TextStyle, ColorMode, Color, Colors
@@ -70,24 +73,47 @@ class TermStyle:
 
     return None
 
+  def _no_color(self) -> bool:
+    disable_env = [
+      "NO_COLOR",
+      "ANSI_COLORS_DISABLED"
+    ]
+
+    if any(env_var in os.environ for env_var in disable_env):
+      return True
+
+    if "FORCE_COLOR" in os.environ:
+      return False
+
+    if os.environ.get("TERM") == "dumb":
+      return True
+
+    try:
+        return not os.isatty(sys.stdout.fileno())
+    except io.UnsupportedOperation:
+        return not sys.stdout.isatty()
+
   def print(self, text: Optional[str], clear: bool = True, **kwargs):
     if text:
-      settings = self._override_settings \
-        if self._override_settings.has_settings() \
-        else self._default_settings
+      fmt_text = text
 
-      styles = ";".join([textStyles[style] for style in settings.styles()])
-      foreground = self._set_color_code(settings, "foreground")
-      background = self._set_color_code(settings, "background")
+      if not self._no_color():
+        settings = self._override_settings \
+          if self._override_settings.has_settings() \
+          else self._default_settings
 
-      fmt = ";".join([style for style in [styles, foreground, background] if style])
+        styles = ";".join([textStyles[style] for style in settings.styles()])
+        foreground = self._set_color_code(settings, "foreground")
+        background = self._set_color_code(settings, "background")
 
-      fmt_text = "{base}{fmt}m{text}{reset}".format(
-        base=BASE,
-        fmt=fmt,
-        text=text,
-        reset=RESET
-      )
+        fmt = ";".join([style for style in [styles, foreground, background] if style])
+
+        fmt_text = "{base}{fmt}m{text}{reset}".format(
+          base=BASE,
+          fmt=fmt,
+          text=text,
+          reset=RESET
+        )
 
       print(fmt_text, **kwargs)
 
@@ -95,6 +121,9 @@ class TermStyle:
       self._override_settings.clear()
 
     return self
+
+  def clear(self):
+    self._default_settings.clear()
   
   def __call__(self, *args: Any, **kwds: Any) -> Any:
     return self.print(*args, **kwds)

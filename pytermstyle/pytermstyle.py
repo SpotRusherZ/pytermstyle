@@ -93,23 +93,27 @@ class TermStyle:
     except io.UnsupportedOperation:
         return not sys.stdout.isatty()
 
+  def get_base_format(self):
+    settings = self._override_settings \
+      if self._override_settings.has_settings() \
+      else self._default_settings
+
+    styles = ";".join([textStyles[style] for style in settings.styles()])
+    foreground = self._set_color_code(settings, "foreground")
+    background = self._set_color_code(settings, "background")
+
+    fmt = ";".join([style for style in [styles, foreground, background] if style])
+
+    return f"{BASE}{fmt}m"
+
   def print(self, text: Optional[str], clear: bool = True, **kwargs):
     if text:
       fmt_text = text
 
       if not self._no_color():
-        settings = self._override_settings \
-          if self._override_settings.has_settings() \
-          else self._default_settings
+        fmt = self.get_base_format()
 
-        styles = ";".join([textStyles[style] for style in settings.styles()])
-        foreground = self._set_color_code(settings, "foreground")
-        background = self._set_color_code(settings, "background")
-
-        fmt = ";".join([style for style in [styles, foreground, background] if style])
-
-        fmt_text = "{base}{fmt}m{text}{reset}".format(
-          base=BASE,
+        fmt_text = "{fmt}{text}{reset}".format(
           fmt=fmt,
           text=text,
           reset=RESET

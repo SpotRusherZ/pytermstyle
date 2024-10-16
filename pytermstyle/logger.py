@@ -1,5 +1,7 @@
 import logging
 
+from typing import Literal, Optional
+
 from .definitions import RESET
 from .pytermstyle import TermStyle
 
@@ -12,6 +14,14 @@ DEFAULT_SETTINGS = {
     "styles": ["bold"],
     "foreground": { "color": "red" }
   },
+}
+
+_Style = Literal["%", "{", "$"]
+
+BASE_STYLES = {
+    '%': "%(colorStart)s%(levelname)s:%(name)s:%(colorEnd)s%(message)s",
+    '{': '{colorStart}{levelname}:{name}:{colorEnd}{message}',
+    '$': '${colorStart}${levelname}:${name}:${colorEnd}${message}',
 }
 
 class TermStyleRecord:
@@ -28,8 +38,19 @@ class TermStyleRecord:
 
 
 class TermStyleFormatter(logging.Formatter):
-  def __init__(self, *args, settings = None, **kwargs):
-    super().__init__(*args, **kwargs)
+  def __init__(
+      self,
+      fmt = None,
+      datefmt = None,
+      style: _Style = "%",
+      *args,
+      settings = None,
+      **kwargs
+  ):
+    if not fmt:
+      fmt = BASE_STYLES.get(style)
+
+    super().__init__(fmt, datefmt, style, *args, **kwargs)
 
     self._stg = settings if settings else DEFAULT_SETTINGS
     self._term_styles = {
@@ -43,3 +64,20 @@ class TermStyleFormatter(logging.Formatter):
       else TermStyle(DEFAULT_SETTINGS[record.levelname])
 
     return super().formatMessage(TermStyleRecord(record, term_style)) # type: ignore
+
+def basicConfig(
+    format = "",
+    style: _Style = "%",
+    datefmt: Optional[str] = None,
+    settings = None,
+    **kwargs
+):
+  formatter = TermStyleFormatter(
+    format,
+    datefmt,
+    style,
+    settings=settings
+  )
+
+  logging.basicConfig(**kwargs)
+  logging.root.handlers[0].setFormatter(formatter)

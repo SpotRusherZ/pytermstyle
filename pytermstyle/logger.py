@@ -38,6 +38,25 @@ class TermStyleRecord:
 
 
 class TermStyleFormatter(logging.Formatter):
+  """
+  Custom formatter that can be used for integration with logging module.
+
+  User can specify custom settings or rely on default colored settings.
+
+  Format of settings dictionary that can be passed to formatter is: \n
+  "loggingLevel" - settings.TermSettings
+
+  e.g. `"{ INFO": { "foreground": { "color": "green" } } }`
+
+  Logging Levels not specified in custom settings will use predefined default settings.
+
+  ---
+
+  User can choose which portion of logging output will be colored by surrounding that\n
+  portion in format with `colorStart` and `colorEnd` attributes.
+
+  e.g. `%(colorStart)s%(levelname)s:%(name)s:%(colorEnd)s%(message)s`
+  """
   def __init__(
       self,
       fmt = None,
@@ -72,6 +91,23 @@ def basicConfig(
     settings = None,
     **kwargs
 ):
+  """
+  Wrapper around logging.basicConfig method to quickly configure colored logging output
+
+  `format` - Same as logging format, with addition of `colorStart` and `colorEnd` attributes\n
+  which define portion of output which will be colored
+
+  ---
+
+  `settings` - Settings for colored output of logging levels.\n
+
+  Format of settings dictionary that can be passed is: \n
+  "loggingLevel" - settings.TermSettings
+
+  e.g. `"{ INFO": { "foreground": { "color": "green" } } }`
+
+  Logging Levels not specified in custom settings will use predefined default settings.
+  """
   formatter = TermStyleFormatter(
     format,
     datefmt,

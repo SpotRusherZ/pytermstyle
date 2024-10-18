@@ -14,7 +14,53 @@ class TermConfigException(Exception):
   pass
 
 class TermSettings:
+  """
+  Represents color settings that can be passed to logger and used as default.\n
+  These settings can be passed to a constructor as a dictionary in following format:
+
+   {
+    "style": {
+      "type": "list[str]",
+      "description": "List of valid font styles",
+      "required": "false"
+    },
+    "foreground": {
+      "type": "string" | "list[str]",
+      "description": "Valid supported color / 8-bit color code or RGB value"
+      "oneOf": {
+        "color": "string",
+        "rgb": "list[str]"
+      },
+      "required": "false"
+    },
+    "background": {
+      "type": "string" | "list[str]",
+      "description": "Valid supported color / 8-bit color code or RGB value"
+      "oneOf": {
+        "color": "string",
+        "rgb": "list[str]"
+      },
+      "required": "false"
+    },
+  }
+
+  Example:
+
+   {
+    "style": ["bold", "italic", "underline"],
+    "foreground": {
+      "rgb": ["61", "217", "217"],
+    },
+    "background": {
+      "color": "magenta"
+    },
+  }
+  """
   def __init__(self, settings: Optional[Settings] = None) -> None:
+    """
+    `TermConfigException` exception will be thrown if passed settings\n
+    are not in valid format.
+    """
     self._settings = copy.deepcopy(settings) if settings else TermOptions()
     self._verify_settings(self._settings)
 

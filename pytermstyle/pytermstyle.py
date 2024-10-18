@@ -44,11 +44,38 @@ def _make_color_method(name, mode: ColorMode):
     return color_method
 
 class TermStyle:
+  """
+  Colored logger implementation.
+
+  By default it acts as a normal print function. \n
+  User can override this behavior by using either:
+   * Exposed methods for styling / color.
+     These methods can be chained to produce desired output
+
+     e.g `logger.bold().fg_red().bg_cyan("Colored Text")`
+
+     Once the text to output is provided to a method, chain will stop,
+     text will be printed to output and logger will return to default settings
+
+   * Providing settings which will act as logger default.
+     Settings can be provided as dictionary with format explained in settings.TermSettings
+
+     After providing settings, logger can be called directly:
+
+     e.g. `logger("Colored text")`
+
+  If a user calls methods for styling / color directly, they will override any existing settings\n
+  Once logger outputs text with overridden styling / color, \n
+  it will return to configured settings as a default behavior
+  """
   def __init__(self, settings: Optional[Settings] = None) -> None:
     self._default_settings = TermSettings(settings)
     self._override_settings = TermSettings()
 
   def configure(self, settings: Optional[Settings] = None):
+    """
+    Used to configure new settings for logger
+    """
     self._default_settings = TermSettings(settings)
 
   def add_style(self, style: TextStyle):
@@ -74,6 +101,16 @@ class TermStyle:
     return None
 
   def _no_color(self) -> bool:
+    """
+    Support for NO_COLOR mode that can be controlled by environment variables\n
+    If one of the following variables exists, or if standard output is not terminal,\n
+    logger will strip any ANSI color codes from the output and behave as regular `print function`:
+     * NO_COLOR
+     * ANSI_COLORS_DISABLED
+     * TERM = "dumb"
+
+    If FORCE_COLOR environment variable exists, logger will attempt colored output.
+    """
     disable_env = [
       "NO_COLOR",
       "ANSI_COLORS_DISABLED"
@@ -127,6 +164,9 @@ class TermStyle:
     return self
 
   def clear(self):
+    """
+    Can be used to clear any previously configured settings
+    """
     self._default_settings.clear()
   
   def __call__(self, *args: Any, **kwds: Any) -> Any:
@@ -138,7 +178,7 @@ class TermStyle:
 
     return self.print(text, clear, **kwargs)
   
-  """Methods for styling"""
+  """ Public Methods for font styling"""
   bold = _make_style_method("bold")
   faint = _make_style_method("faint")
   italic = _make_style_method("italic")
@@ -151,7 +191,7 @@ class TermStyle:
   encircled = _make_style_method("encircled")
   overlined = _make_style_method("overlined")
 
-  """4-bit Colors"""
+  """Public 4-bit predefined Colors"""
   bg_black = _make_color_method("black", "background")
   bg_red = _make_color_method("red", "background")
   bg_green = _make_color_method("green", "background")
@@ -170,7 +210,7 @@ class TermStyle:
   fg_cyan = _make_color_method("cyan", "foreground")
   fg_white = _make_color_method("white", "foreground")
 
-  """Extended Colors"""
+  """Public Extended Colors"""
   def fg_color(self, color: Colors, *, text: Optional[str] = None, clear: bool = True, **kwargs):
     if not is_valid_color(color):
       raise ColorException("Invalid value for color: {}".format(color))
@@ -185,7 +225,7 @@ class TermStyle:
     self._override_settings.add_color(color, "background")
     return self._output(text, clear, **kwargs)
 
-  """16-bit RGB"""
+  """Public 16-bit RGB"""
   def fg_rgb(self, r: int, g: int, b: int, *, text: Optional[str] = None, clear: bool = True, **kwargs):
     rgb = [str(r), str(g), str(b)]
 
@@ -208,14 +248,23 @@ class TermStyle:
 _root = TermStyle()
 
 def get_default_logger():
+  """
+  Can be used to acquire default colored logger
+  """
   return _root
 
 def init_config(settings: Optional[Settings] = None):
+  """
+  Can be used to acquire and configure default colored logger
+  """
   _root.configure(settings)
 
   return _root
 
 def create_logger(settings: Optional[Settings] = None):
+  """
+  Can be used to create and configure custom instance of colored logger
+  """
   logger = TermStyle(settings)
 
   return logger

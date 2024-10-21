@@ -1,17 +1,20 @@
-from typing import Optional
+from typing import Optional, get_args
 
 from .custom_types import ColorMode, Color
 from .definitions import baseColors, extendedColors
 
 __all__ = [
-  'is_rgb_valid', 'get_4bit_color_code', 'get_8bit_color_code'
+  'is_rgb_valid', 'is_valid_color', 'get_4bit_color_code', 'get_8bit_color_code'
 ]
 
 def is_rgb_valid(rgb: list[str]) -> bool:
   """
   Returns True if all values are valid RGB code
   """
-  return all(0 <= int(color) <= 255 for color in rgb)
+  try:
+    return all(0 <= int(color) <= 255 for color in rgb)
+  except ValueError:
+    return False
 
 def is_valid_color(name: str) -> bool:
   """
@@ -29,6 +32,12 @@ def get_4bit_color_code(color: Color, mode: ColorMode) -> str:
 
   Supported by variety of terminal emulators
   """
+  if color not in baseColors:
+    raise ValueError(f"Color {color} does not have a supported 4-bit code")
+
+  if mode not in get_args(ColorMode):
+    raise ValueError(f"Color mode {mode} is not supported")
+
   code = baseColors.index(color) + (30 if mode == "foreground" else 40)
 
   return str(code)

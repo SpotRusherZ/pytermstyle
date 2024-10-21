@@ -2,6 +2,10 @@ from __future__ import annotations
 
 from typing import Literal, Union, TypedDict
 
+__all__ = [
+  'TextStyle', 'Color', 'Colors', 'ColorMode', 'TermOptions'
+]
+
 TextStyle = Literal[
   "bold",
   "faint",

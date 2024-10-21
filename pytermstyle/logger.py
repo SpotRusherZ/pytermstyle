@@ -5,6 +5,10 @@ from typing import Literal, Optional
 from .definitions import RESET
 from .pytermstyle import TermStyle
 
+__all__ = [
+  'TermStyleRecord', 'TermStyleFormatter', 'basicConfig'
+]
+
 DEFAULT_SETTINGS = {
   "DEBUG": { "foreground": { "color": "light-blue" } },
   "INFO": { "foreground": { "color": "green" } },

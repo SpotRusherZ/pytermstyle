@@ -3,6 +3,10 @@ from typing import Optional
 from .custom_types import ColorMode, Color
 from .definitions import baseColors, extendedColors
 
+__all__ = [
+  'is_rgb_valid', 'get_4bit_color_code', 'get_8bit_color_code'
+]
+
 def is_rgb_valid(rgb: list[str]) -> bool:
   """
   Returns True if all values are valid RGB code

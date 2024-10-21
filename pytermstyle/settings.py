@@ -8,6 +8,10 @@ from .custom_types import TermOptions, ColorOptions, TextStyle, Colors, ColorMod
 from .definitions import textStyles, extendedColors
 from .utils import is_rgb_valid
 
+__all__ = [
+  'TermConfigException', 'TermSettings'
+]
+
 Settings = Union[TermOptions, dict]
 
 class TermConfigException(Exception):

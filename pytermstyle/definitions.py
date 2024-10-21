@@ -2,6 +2,11 @@ from __future__ import annotations
 
 from .custom_types import TextStyle, Color, Colors
 
+__all__ = [
+  'BASE', 'RESET', 'FG_RGB_CODE', 'BG_RGB_CODE', 'FG_COLOR_CODE',
+  'BG_COLOR_CODE', 'textStyles', 'baseColors', 'extendedColors'
+]
+
 BASE = "\033["
 RESET = "\033[0m"
 FG_RGB_CODE = ["38", "2"]

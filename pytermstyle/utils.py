@@ -35,8 +35,7 @@ def get_4bit_color_code(color: Color, mode: ColorMode) -> str:
   if color not in baseColors:
     raise ValueError(f"Color {color} does not have a supported 4-bit code")
 
-  if mode not in get_args(ColorMode):
-    raise ValueError(f"Color mode {mode} is not supported")
+  check_invalid_mode(mode)
 
   code = baseColors.index(color) + (30 if mode == "foreground" else 40)
 
@@ -52,3 +51,10 @@ def get_8bit_color_code(name: str) -> Optional[str]:
     return name if name.isdigit() and is_rgb_valid([name]) else None
 
   return extendedColors[name]
+
+def check_invalid_mode(mode: str):
+  """
+  Raises `ValueError` if mode is not a valid `ColorMode`
+  """
+  if mode not in get_args(ColorMode):
+    raise ValueError(f"Color mode {mode} is not supported")

@@ -2,11 +2,11 @@ from __future__ import annotations
 
 import copy
 
-from typing import Optional, Union
+from typing import Optional, Union, get_args
 
 from .custom_types import TermOptions, ColorOptions, TextStyle, Colors, ColorMode
 from .definitions import textStyles, extendedColors
-from .utils import is_rgb_valid
+from .utils import is_rgb_valid, check_invalid_mode
 
 __all__ = [
   'TermConfigException', 'TermSettings'
@@ -95,13 +95,31 @@ class TermSettings:
 
   """ Setters """
   def add_style(self, style: TextStyle):
+    error = self._verify_styles([style])
+    if error:
+      raise TermConfigException(error)
+
     self._settings.setdefault("style", []).append(style)
 
   def add_color(self, color: Colors, mode: ColorMode):
-    self._settings[mode] = ColorOptions({ "color": color })
+    check_invalid_mode(mode)
+    color_to_add = ColorOptions({ "color": color })
+
+    error = self._verify_colors(color_to_add)
+    if error:
+      raise TermConfigException(error)
+
+    self._settings[mode] = color_to_add
 
   def add_rgb(self, rgb: list[str], mode: ColorMode):
-    self._settings[mode] = ColorOptions({ "rgb": rgb })
+    check_invalid_mode(mode)
+    rgb_to_add = ColorOptions({ "rgb": rgb })
+
+    error = self._verify_colors(rgb_to_add)
+    if error:
+      raise TermConfigException(error)
+
+    self._settings[mode] = rgb_to_add
 
   """ Verification utilities """
   def _verify_settings(self, settings: Settings):

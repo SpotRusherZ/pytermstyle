@@ -1,6 +1,5 @@
 from __future__ import annotations
 
-import io
 import os
 import sys
 from typing import Any, Optional
@@ -130,10 +129,7 @@ class TermStyle:
     if os.environ.get("TERM") == "dumb":
       return True
 
-    try:
-        return not os.isatty(sys.stdout.fileno())
-    except io.UnsupportedOperation:
-        return not sys.stdout.isatty()
+    return not sys.stdout.isatty()
 
   def get_base_format(self):
     settings = self._override_settings \
@@ -146,7 +142,7 @@ class TermStyle:
 
     fmt = ";".join([style for style in [styles, foreground, background] if style])
 
-    return f"{BASE}{fmt}m"
+    return f"{BASE}{fmt}m" if fmt else ""
 
   def print(self, text: Optional[str], clear: bool = True, **kwargs):
     if text:
@@ -159,7 +155,7 @@ class TermStyle:
           fmt=fmt,
           text=text,
           reset=RESET
-        )
+        ) if fmt else fmt_text
 
       print(fmt_text, **kwargs)
 

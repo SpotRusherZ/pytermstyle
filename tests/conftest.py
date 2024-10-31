@@ -3,13 +3,28 @@ import pytest
 @pytest.fixture
 def texts():
   return {
+    # Settings
     "invalidStyle": "Invalid styles: unknown",
     "invalidColor": "Color unknown is not supported.",
     "invalidMode": "Color mode unknown is not supported",
     "mutuallyExclusive": '"rgb" and "color" properties are mutually exclusive.',
     "wrongRGBSize": '"rgb" field must be a list in format: [r, g, b]',
     "wrongRGBFormat": "Provided values for RGB must be 0 <= color <= 255",
+
+    # TermStyle
+    "message": "Colored logger message",
   }
+
+@pytest.fixture
+def colored():
+  return {
+    "style": "\033[{}mColored logger message\033[0m",
+    "foreground": "\033[38;5;{}mColored logger message\033[0m",
+    "background": "\033[48;5;{}mColored logger message\033[0m",
+  }
+
+def newline(text: str):
+  return f"{text}\n"
 
 valid_rgbs = [
   ['61', '217', '187'],

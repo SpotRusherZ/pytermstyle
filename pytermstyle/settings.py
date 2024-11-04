@@ -2,11 +2,11 @@ from __future__ import annotations
 
 import copy
 
-from typing import Optional, Union, get_args
+from typing import Optional, Union
 
 from .custom_types import TermOptions, ColorOptions, TextStyle, Colors, ColorMode
 from .definitions import textStyles, extendedColors
-from .utils import is_rgb_valid, check_invalid_mode
+from .utils import is_rgb_valid, check_invalid_mode, unique
 
 __all__ = [
   'TermConfigException', 'TermSettings'
@@ -78,8 +78,8 @@ class TermSettings:
     self._settings = {}
 
   """ Getters """
-  def styles(self) -> set[TextStyle]:
-    return set(self._settings.get("style", []))
+  def styles(self) -> list[TextStyle]:
+    return unique(self._settings.get("style", []))
 
   def color(self, mode: ColorMode) -> Optional[str]:
     if mode in self._settings:

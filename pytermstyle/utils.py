@@ -1,3 +1,5 @@
+from __future__ import annotations
+
 from typing import Optional, get_args
 
 from .custom_types import ColorMode, Color
@@ -58,3 +60,12 @@ def check_invalid_mode(mode: str):
   """
   if mode not in get_args(ColorMode):
     raise ValueError(f"Color mode {mode} is not supported")
+
+def unique(items: list) -> list:
+  """
+  Returns list of unique elements from items while\n
+  preserving order of the list
+  """
+  visited = set()
+
+  return [item for item in items if not (item in visited or visited.add(item))]

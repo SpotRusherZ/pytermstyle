@@ -67,3 +67,11 @@ class Test8Bit:
   @pytest.mark.parametrize('code', invalid_rgbs[0])
   def test__invalid_8bit_code(self, code: str):
     assert utils.get_8bit_color_code(code) == None
+
+
+class TestUnique:
+  def test__valid_inputs(self):
+    assert utils.unique([]) == []
+    assert utils.unique([1, 2, 3]) == [1, 2, 3]
+    assert utils.unique([1, 1, 2, 3, 1, 2]) == [1, 2, 3]
+    assert utils.unique([1, 1, 1, 1]) == [1]

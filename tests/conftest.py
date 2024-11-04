@@ -28,7 +28,7 @@ def colored():
     "rgbChainedColors": "\033[38;2;61;217;187;48;2;32;87;111mColored logger message\033[0m",
     "foregroundPrecedence": "\033[38;2;61;217;187mColored logger message\033[0m",
     "backgroundPrecedence": "\033[48;2;61;217;187mColored logger message\033[0m",
-    "defaultSettings": "\033[4;3;1;38;2;61;217;217;48;5;5mColored logger message\033[0m",
+    "defaultSettings": "\033[1;3;4;38;2;61;217;217;48;5;5mColored logger message\033[0m",
   }
 
 def newline(text: str):

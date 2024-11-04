@@ -207,3 +207,18 @@ class TestChainingColors:
     captured = capsys.readouterr()
 
     assert captured.out == newline(colored["background"].format(code))
+
+class TestLoggerWithSettings:
+  @pytest.fixture(autouse=True)
+  def setup_before_after(self, monkeypatch):
+    monkeypatch.setenv('FORCE_COLOR', 'true')
+
+    yield
+  
+  def test__default_logging(self, capsys, texts, colored, mock_settings_config):
+    logger = TermStyle(mock_settings_config)
+
+    logger(texts["message"])
+    captured = capsys.readouterr()
+
+    assert captured.out == newline(colored["defaultSettings"])

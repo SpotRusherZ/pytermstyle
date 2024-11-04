@@ -22,7 +22,7 @@ class TestSettings:
     settings = TermSettings(mock_settings_config)
 
     assert settings.has_settings() == True
-    assert settings.styles() == {"bold", "underline", "italic"}
+    assert settings.styles() == ["bold", "italic", "underline"]
     assert settings.rgb("foreground") == ["61", "217", "217"]
     assert settings.color("background") == "magenta"
 
@@ -30,7 +30,7 @@ class TestSettings:
     settings = TermSettings()
 
     assert settings.has_settings() == False
-    assert settings.styles() == set()
+    assert settings.styles() == []
     assert settings.rgb("foreground") is None
     assert settings.rgb("background") is None
     assert settings.color("foreground") is None
@@ -45,7 +45,7 @@ class TestSettings:
 
     # Add more styles to settings
     settings.add_style("framed")
-    assert settings.styles() == {"bold", "framed"}
+    assert settings.styles() == ["bold", "framed"]
 
     # Check for adding of color
     settings.add_color("light-green", "foreground")

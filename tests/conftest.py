@@ -13,6 +13,7 @@ def texts():
 
     # TermStyle
     "message": "Colored logger message",
+    "invalidColorValue": "Invalid value for color: unknown",
   }
 
 @pytest.fixture
@@ -21,6 +22,13 @@ def colored():
     "style": "\033[{}mColored logger message\033[0m",
     "foreground": "\033[38;5;{}mColored logger message\033[0m",
     "background": "\033[48;5;{}mColored logger message\033[0m",
+    "foregroundRGB": "\033[38;2;{}mColored logger message\033[0m",
+    "backgroundRGB": "\033[48;2;{}mColored logger message\033[0m",
+    "baseChainedColors": "\033[9;38;5;4;48;5;3mColored logger message\033[0m",
+    "rgbChainedColors": "\033[38;2;61;217;187;48;2;32;87;111mColored logger message\033[0m",
+    "foregroundPrecedence": "\033[38;2;61;217;187mColored logger message\033[0m",
+    "backgroundPrecedence": "\033[48;2;61;217;187mColored logger message\033[0m",
+    "defaultSettings": "\033[4;3;1;38;2;61;217;217;48;5;5mColored logger message\033[0m",
   }
 
 def newline(text: str):

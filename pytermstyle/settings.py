@@ -174,3 +174,6 @@ class TermSettings:
     return "Configuration errors: [{}]".format(
       ", ".join(errors)
     )
+
+  def __repr__(self) -> str:
+    return repr(self._settings)

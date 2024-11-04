@@ -1,6 +1,6 @@
 import pytest
 
-from pytermstyle.pytermstyle import TermStyle, ColorException
+from pytermstyle.pytermstyle import TermStyle, ColorException, init_config, get_default_logger, create_logger
 from pytermstyle.definitions import textStyles, baseColors, extendedColors
 
 from .conftest import newline, valid_rgbs, invalid_rgbs
@@ -217,6 +217,81 @@ class TestLoggerWithSettings:
   
   def test__default_logging(self, capsys, texts, colored, mock_settings_config):
     logger = TermStyle(mock_settings_config)
+
+    logger(texts["message"])
+    captured = capsys.readouterr()
+
+    assert captured.out == newline(colored["defaultSettings"])
+  
+  def test__clear_settings(self, capsys, texts, colored, mock_settings_config):
+    logger = TermStyle(mock_settings_config)
+
+    logger(texts["message"])
+    captured = capsys.readouterr()
+
+    assert captured.out == newline(colored["defaultSettings"])
+
+    logger.clear()
+
+    logger(texts["message"])
+    captured = capsys.readouterr()
+
+    assert captured.out == newline(texts["message"])
+  
+  def test__override_settings(self, capsys, texts, colored, mock_settings_config):
+    logger = TermStyle(mock_settings_config)
+
+    logger.bold(texts["message"])
+    captured = capsys.readouterr()
+
+    assert captured.out == newline(colored["style"].format(1))
+  
+  def test__configure_settings(self, capsys, texts, colored, mock_settings_config):
+    logger = TermStyle(mock_settings_config)
+
+    logger.configure({
+      **mock_settings_config,
+      "style": ["bold"]
+    })
+
+    logger(texts["message"])
+    captured = capsys.readouterr()
+
+    assert captured.out == newline(colored["configuredSettings"])
+
+
+class TestModuleLogger:
+  @pytest.fixture(autouse=True)
+  def setup_before_after(self, monkeypatch):
+    monkeypatch.setenv('FORCE_COLOR', 'true')
+    get_default_logger().clear()
+
+    yield
+  
+  def test__root_logger(self, capsys, texts):
+    logger = get_default_logger()
+
+    logger(texts["message"])
+    captured = capsys.readouterr()
+
+    assert captured.out == newline(texts["message"])
+  
+  def test__init_config(self, capsys, texts, colored, mock_settings_config):
+    logger = init_config(mock_settings_config)
+
+    logger(texts["message"])
+    captured = capsys.readouterr()
+
+    assert captured.out == newline(colored["defaultSettings"])
+  
+  def test__create_logger(self, capsys, texts, colored, mock_settings_config):
+    root_logger = get_default_logger()
+    logger = create_logger(mock_settings_config)
+
+    root_logger(texts["message"])
+    captured = capsys.readouterr()
+
+    assert captured.out == newline(texts["message"])
 
     logger(texts["message"])
     captured = capsys.readouterr()

@@ -1,4 +1,5 @@
 import pytest
+import logging
 
 @pytest.fixture
 def texts():
@@ -14,6 +15,10 @@ def texts():
     # TermStyle
     "message": "Colored logger message",
     "invalidColorValue": "Invalid value for color: unknown",
+
+    # Logger
+    "startBaseFormat": "\033[1;3;4;38;2;61;217;217;48;5;5m",
+    "endBaseFormat": "\033[0m",
   }
 
 @pytest.fixture
@@ -30,6 +35,9 @@ def colored():
     "backgroundPrecedence": "\033[48;2;61;217;187mColored logger message\033[0m",
     "defaultSettings": "\033[1;3;4;38;2;61;217;217;48;5;5mColored logger message\033[0m",
     "configuredSettings": "\033[1;38;2;61;217;217;48;5;5mColored logger message\033[0m",
+    "defaultLoggerSettings": "\033[38;5;2mINFO:MockRecord:\033[0mColored logger message",
+    "customLoggerSettings": "\033[1mINFO:MockRecord:\033[0mColored logger message",
+    "customFormatMessage": "\033[38;5;2mINFO:MockRecord:Colored logger message\033[0m",
   }
 
 def newline(text: str):
@@ -63,3 +71,15 @@ def mock_settings_config():
       "color": "magenta"
     },
   }
+
+@pytest.fixture
+def mock_record() -> logging.LogRecord:
+  return logging.LogRecord(
+    name="MockRecord",
+    level=logging.INFO,
+    pathname="",
+    lineno=34,
+    msg="Colored logger message",
+    args=None,
+    exc_info=None
+  )

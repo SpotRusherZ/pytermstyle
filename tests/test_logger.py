@@ -1,7 +1,8 @@
 import pytest
+import logging
 
 from pytermstyle.pytermstyle import create_logger
-from pytermstyle.logger import TermStyleRecord, TermStyleFormatter
+from pytermstyle.logger import TermStyleRecord, TermStyleFormatter, basicConfig
 
 class TestRecord:
   @pytest.fixture(autouse=True)
@@ -16,6 +17,16 @@ class TestRecord:
 
     assert record.colorStart == ""
     assert record.colorEnd == ""
+
+  def test__no_color_record(self, mock_record, monkeypatch):
+    monkeypatch.setenv('NO_COLOR', 'true')
+
+    term_style = create_logger()
+    record = TermStyleRecord(mock_record, term_style)
+
+    assert record.colorStart == ""
+    assert record.colorEnd == ""
+
   
   def test__record_settings(self, mock_record, mock_settings_config, texts):
     term_style = create_logger(mock_settings_config)
@@ -51,3 +62,8 @@ class TestFormatter:
     mock_record.message = texts["message"]
 
     assert formatter.formatMessage(mock_record) == colored["customFormatMessage"]
+  
+  def test__basic_config(self):
+    basicConfig()
+
+    assert type(logging.root.handlers[0].formatter) is TermStyleFormatter

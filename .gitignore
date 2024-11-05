@@ -1,3 +1,12 @@
 .vscode
 
 __pycache__/
+
+# PyTest
+.pytest_cache
+
+# Coverage
+.coverage
+htmlcov
+coverage.*
+*,cover

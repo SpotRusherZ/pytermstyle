@@ -260,6 +260,36 @@ class TestLoggerWithSettings:
     assert captured.out == newline(colored["configuredSettings"])
 
 
+class TestLoggerEnvironment:
+  def test__no_env(self, mock_settings_config, texts, capsys):
+    logger = TermStyle(mock_settings_config)
+
+    logger(texts["message"])
+    captured = capsys.readouterr()
+
+    assert captured.out == newline(texts["message"])
+
+  def test__no_color(self, monkeypatch, mock_settings_config, texts, capsys):
+    monkeypatch.setenv('NO_COLOR', 'true')
+
+    logger = TermStyle(mock_settings_config)
+
+    logger(texts["message"])
+    captured = capsys.readouterr()
+
+    assert captured.out == newline(texts["message"])
+  
+  def test__term_env(self, monkeypatch, mock_settings_config, texts, capsys):
+    monkeypatch.setenv('TERM', 'dumb')
+
+    logger = TermStyle(mock_settings_config)
+
+    logger(texts["message"])
+    captured = capsys.readouterr()
+
+    assert captured.out == newline(texts["message"])
+
+
 class TestModuleLogger:
   @pytest.fixture(autouse=True)
   def setup_before_after(self, monkeypatch):

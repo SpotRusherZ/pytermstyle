@@ -38,10 +38,12 @@ class TestSettings:
 
   def test__add_settings(self):
     settings = TermSettings()
+    assert repr(settings) == "{}"
 
     # Add style to settings
     settings.add_style("bold")
     assert settings.has_settings() == True
+    assert repr(settings) == "{'style': ['bold']}"
 
     # Add more styles to settings
     settings.add_style("framed")

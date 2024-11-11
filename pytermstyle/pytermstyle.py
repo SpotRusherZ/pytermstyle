@@ -92,7 +92,7 @@ class TermStyle:
     color = settings.rgb(mode)
     if color:
       rgb_code = FG_RGB_CODE if mode == "foreground" else BG_RGB_CODE
-      return ";".join(rgb_code + color)
+      return ";".join(rgb_code + list(map(str, color)))
 
     color = settings.color(mode)
     if color:

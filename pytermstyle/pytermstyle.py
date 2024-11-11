@@ -171,6 +171,9 @@ class TermStyle:
     self._default_settings.clear()
   
   def __call__(self, *args: Any, **kwds: Any) -> Any:
+    if not args and not kwds:
+      kwds = { "text": "\n", "end": "" }
+
     return self.print(*args, **kwds)
 
   def _output(self, text: Optional[str] = None, clear: bool = True, **kwargs):

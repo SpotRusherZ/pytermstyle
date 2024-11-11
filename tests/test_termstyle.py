@@ -15,6 +15,11 @@ class TestBasicStyles:
   def test__normal_output(self, capsys, texts):
     logger = TermStyle()
 
+    logger()
+    captured = capsys.readouterr()
+
+    assert captured.out == "\n"
+
     logger(texts["message"])
     captured = capsys.readouterr()
 

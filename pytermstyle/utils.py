@@ -6,7 +6,8 @@ from .custom_types import ColorMode, Color
 from .definitions import baseColors, extendedColors
 
 __all__ = [
-  'is_rgb_valid', 'is_valid_color', 'get_4bit_color_code', 'get_8bit_color_code'
+  'is_rgb_valid', 'is_valid_color', 'get_4bit_color_code', 'get_8bit_color_code',
+  'check_invalid_mode', 'unique'
 ]
 
 def is_rgb_valid(rgb: list[str]) -> bool:

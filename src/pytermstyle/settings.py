@@ -14,8 +14,10 @@ __all__ = [
 
 Settings = Union[TermOptions, dict]
 
+
 class TermConfigException(Exception):
   pass
+
 
 class TermSettings:
   """
@@ -83,13 +85,13 @@ class TermSettings:
 
   def color(self, mode: ColorMode) -> Optional[str]:
     if mode in self._settings:
-      return self._settings[mode].get("color") # type: ignore
+      return self._settings[mode].get("color")  # type: ignore
 
     return None
 
   def rgb(self, mode: ColorMode) -> Optional[list[str]]:
     if mode in self._settings:
-      return self._settings[mode].get("rgb") # type: ignore
+      return self._settings[mode].get("rgb")  # type: ignore
 
     return None
 
@@ -103,7 +105,7 @@ class TermSettings:
 
   def add_color(self, color: Colors, mode: ColorMode):
     check_invalid_mode(mode)
-    color_to_add = ColorOptions({ "color": color })
+    color_to_add = ColorOptions({"color": color})
 
     error = self._verify_colors(color_to_add)
     if error:
@@ -113,7 +115,7 @@ class TermSettings:
 
   def add_rgb(self, rgb: list[str], mode: ColorMode):
     check_invalid_mode(mode)
-    rgb_to_add = ColorOptions({ "rgb": rgb })
+    rgb_to_add = ColorOptions({"rgb": rgb})
 
     error = self._verify_colors(rgb_to_add)
     if error:
@@ -130,7 +132,7 @@ class TermSettings:
       errors.append(style_message)
 
     for mode in ["foreground", "background"]:
-      message = self._verify_colors(settings.get(mode))
+      message = self._verify_colors(settings.get(mode))  # type: ignore
       if message:
         errors.append(message)
 

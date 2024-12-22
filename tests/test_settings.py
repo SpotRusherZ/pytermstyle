@@ -1,6 +1,6 @@
 import pytest
 
-from pytermstyle.settings import TermConfigException, TermSettings
+from pytermstyle import TermConfigException, TermSettings
 
 @pytest.fixture
 def invalid_config():

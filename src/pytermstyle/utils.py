@@ -10,6 +10,7 @@ __all__ = [
   'check_invalid_mode', 'unique'
 ]
 
+
 def is_rgb_valid(rgb: list[str]) -> bool:
   """
   Returns True if all values are valid RGB code
@@ -18,6 +19,7 @@ def is_rgb_valid(rgb: list[str]) -> bool:
     return all(0 <= int(color) <= 255 for color in rgb)
   except ValueError:
     return False
+
 
 def is_valid_color(name: str) -> bool:
   """
@@ -28,6 +30,7 @@ def is_valid_color(name: str) -> bool:
     return name.isdigit() and is_rgb_valid([name])
 
   return True
+
 
 def get_4bit_color_code(color: Color, mode: ColorMode) -> str:
   """
@@ -44,6 +47,7 @@ def get_4bit_color_code(color: Color, mode: ColorMode) -> str:
 
   return str(code)
 
+
 def get_8bit_color_code(name: str) -> Optional[str]:
   """
   Returns the code for 8-bit (256) predefined colors.\n
@@ -53,7 +57,8 @@ def get_8bit_color_code(name: str) -> Optional[str]:
   if name not in extendedColors:
     return name if name.isdigit() and is_rgb_valid([name]) else None
 
-  return extendedColors[name]
+  return extendedColors[name]  # type: ignore
+
 
 def check_invalid_mode(mode: str):
   """
@@ -62,6 +67,7 @@ def check_invalid_mode(mode: str):
   if mode not in get_args(ColorMode):
     raise ValueError(f"Color mode {mode} is not supported")
 
+
 def unique(items: list) -> list:
   """
   Returns list of unique elements from items while\n
@@ -69,4 +75,4 @@ def unique(items: list) -> list:
   """
   visited = set()
 
-  return [item for item in items if not (item in visited or visited.add(item))]
+  return [item for item in items if not (item in visited or visited.add(item))]  # type: ignore

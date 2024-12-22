@@ -16,36 +16,40 @@ __all__ = [
   'init_config', 'create_logger'
 ]
 
+
 class ColorException(Exception):
   pass
+
 
 def _make_style_method(name):
     def style_method(
       self: TermStyle,
       text: Optional[str] = None,
       *,
-      clear = True,
+      clear=True,
       **kwargs
     ):
       self.add_style(name)
 
       return self._output(text, clear, **kwargs)
-    
+
     return style_method
+
 
 def _make_color_method(name, mode: ColorMode):
     def color_method(
       self: TermStyle,
       text: Optional[str] = None,
       *,
-      clear = True,
+      clear=True,
       **kwargs
     ):
       self.add_color(name, mode)
 
       return self._output(text, clear, **kwargs)
-    
+
     return color_method
+
 
 class TermStyle:
   """
@@ -89,10 +93,10 @@ class TermStyle:
     self._override_settings.add_color(color, mode)
 
   def _set_color_code(self, settings: TermSettings, mode: ColorMode) -> Optional[str]:
-    color = settings.rgb(mode)
-    if color:
+    rgb = settings.rgb(mode)
+    if rgb:
       rgb_code = FG_RGB_CODE if mode == "foreground" else BG_RGB_CODE
-      return ";".join(rgb_code + list(map(str, color)))
+      return ";".join(rgb_code + list(map(str, rgb)))
 
     color = settings.color(mode)
     if color:
@@ -169,10 +173,10 @@ class TermStyle:
     Can be used to clear any previously configured settings
     """
     self._default_settings.clear()
-  
+
   def __call__(self, *args: Any, **kwds: Any) -> Any:
     if not args and not kwds:
-      kwds = { "text": "\n", "end": "" }
+      kwds = {"text": "\n", "end": ""}
 
     return self.print(*args, **kwds)
 
@@ -181,7 +185,7 @@ class TermStyle:
       return self
 
     return self.print(text, clear, **kwargs)
-  
+
   """ Public Methods for font styling"""
   bold = _make_style_method("bold")
   faint = _make_style_method("faint")
@@ -221,7 +225,7 @@ class TermStyle:
 
     self._override_settings.add_color(color, "foreground")
     return self._output(text, clear, **kwargs)
-  
+
   def bg_color(self, color: Colors, *, text: Optional[str] = None, clear: bool = True, **kwargs):
     if not is_valid_color(color):
       raise ColorException("Invalid value for color: {}".format(color))
@@ -235,10 +239,10 @@ class TermStyle:
 
     if not is_rgb_valid(rgb):
       raise ColorException("Provided values for RGB must be 0 <= color <= 255")
-    
+
     self._override_settings.add_rgb(rgb, "foreground")
     return self._output(text, clear, **kwargs)
-  
+
   def bg_rgb(self, r: int, g: int, b: int, *, text: Optional[str] = None, clear: bool = True, **kwargs):
     rgb = [str(r), str(g), str(b)]
 
@@ -251,11 +255,13 @@ class TermStyle:
 
 _root = TermStyle()
 
+
 def get_default_logger():
   """
   Can be used to acquire default colored logger
   """
   return _root
+
 
 def init_config(settings: Optional[Settings] = None):
   """
@@ -264,6 +270,7 @@ def init_config(settings: Optional[Settings] = None):
   _root.configure(settings)
 
   return _root
+
 
 def create_logger(settings: Optional[Settings] = None):
   """

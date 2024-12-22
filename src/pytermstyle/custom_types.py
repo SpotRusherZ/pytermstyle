@@ -57,9 +57,11 @@ Colors4Bit = dict[Color, dict[ColorMode, str]]
 
 # Settings Types
 
+
 class ColorOptions(TypedDict, total=False):
   rgb: list[str]
   color: str
+
 
 class TermOptions(TypedDict, total=False):
   style: list[TextStyle]

@@ -54,4 +54,4 @@ extendedColors: dict[Colors, str] = {
   "lime-green": "156",
 }
 
-extendedColors.update({ color: str(index) for index, color in enumerate(baseColors) })
+extendedColors.update({color: str(index) for index, color in enumerate(baseColors)})

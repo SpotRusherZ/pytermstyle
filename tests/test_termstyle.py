@@ -1,7 +1,6 @@
 import pytest
 
-from pytermstyle.pytermstyle import TermStyle, ColorException, init_config, get_default_logger, create_logger
-from pytermstyle.definitions import textStyles, baseColors, extendedColors
+from pytermstyle import TermStyle, ColorException, init_config, get_default_logger, create_logger, textStyles, baseColors, extendedColors
 
 from .conftest import newline, valid_rgbs, invalid_rgbs
 

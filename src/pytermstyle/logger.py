@@ -10,23 +10,24 @@ __all__ = [
 ]
 
 DEFAULT_SETTINGS = {
-  "DEBUG": { "foreground": { "color": "light-blue" } },
-  "INFO": { "foreground": { "color": "green" } },
-  "WARNING": { "foreground": { "color": "yellow" } },
-  "ERROR": { "foreground": { "color": "red" } },
+  "DEBUG": {"foreground": {"color": "light-blue"}},
+  "INFO": {"foreground": {"color": "green"}},
+  "WARNING": {"foreground": {"color": "yellow"}},
+  "ERROR": {"foreground": {"color": "red"}},
   "CRITICAL": {
     "styles": ["bold"],
-    "foreground": { "color": "red" }
+    "foreground": {"color": "red"}
   },
 }
 
 _Style = Literal["%", "{", "$"]
 
 BASE_STYLES = {
-    '%': "%(colorStart)s%(levelname)s:%(name)s:%(colorEnd)s%(message)s",
-    '{': '{colorStart}{levelname}:{name}:{colorEnd}{message}',
-    '$': '${colorStart}${levelname}:${name}:${colorEnd}${message}',
+  '%': "%(colorStart)s%(levelname)s:%(name)s:%(colorEnd)s%(message)s",
+  '{': '{colorStart}{levelname}:{name}:{colorEnd}{message}',
+  '$': '${colorStart}${levelname}:${name}:${colorEnd}${message}',
 }
+
 
 class TermStyleRecord:
   def __init__(self, record: logging.LogRecord, term_style: TermStyle) -> None:
@@ -62,13 +63,13 @@ class TermStyleFormatter(logging.Formatter):
   e.g. `%(colorStart)s%(levelname)s:%(name)s:%(colorEnd)s%(message)s`
   """
   def __init__(
-      self,
-      fmt = None,
-      datefmt = None,
-      style: _Style = "%",
-      *args,
-      settings = None,
-      **kwargs
+    self,
+    fmt=None,
+    datefmt=None,
+    style: _Style = "%",
+    *args,
+    settings=None,
+    **kwargs
   ):
     if not fmt:
       fmt = BASE_STYLES.get(style)
@@ -77,23 +78,24 @@ class TermStyleFormatter(logging.Formatter):
 
     self._stg = settings if settings else DEFAULT_SETTINGS
     self._term_styles = {
-      level: TermStyle(stg) for level, stg in self._stg.items()
+      level: TermStyle(stg) for level, stg in self._stg.items()  # type: ignore
     }
 
   def formatMessage(self, record: logging.LogRecord) -> str:
     custom_style = self._term_styles.get(record.levelname)
     term_style = custom_style \
-      if custom_style \
-      else TermStyle(DEFAULT_SETTINGS[record.levelname])
+        if custom_style \
+        else TermStyle(DEFAULT_SETTINGS[record.levelname])  # type: ignore
 
-    return super().formatMessage(TermStyleRecord(record, term_style)) # type: ignore
+    return super().formatMessage(TermStyleRecord(record, term_style))  # type: ignore
+
 
 def basicConfig(
-    format = "",
-    style: _Style = "%",
-    datefmt: Optional[str] = None,
-    settings = None,
-    **kwargs
+  format="",
+  style: _Style = "%",
+  datefmt: Optional[str] = None,
+  settings=None,
+  **kwargs
 ):
   """
   Wrapper around logging.basicConfig method to quickly configure colored logging output

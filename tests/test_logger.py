@@ -1,8 +1,7 @@
 import pytest
 import logging
 
-from pytermstyle.pytermstyle import create_logger
-from pytermstyle.logger import TermStyleRecord, TermStyleFormatter, basicConfig
+from pytermstyle import create_logger, TermStyleRecord, TermStyleFormatter, basicConfig
 
 class TestRecord:
   @pytest.fixture(autouse=True)

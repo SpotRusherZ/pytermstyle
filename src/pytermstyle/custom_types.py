@@ -53,8 +53,6 @@ ColorMode = Literal[
   "background",
 ]
 
-Colors4Bit = dict[Color, dict[ColorMode, str]]
-
 # Settings Types
 
 

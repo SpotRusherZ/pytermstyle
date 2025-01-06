@@ -30,7 +30,7 @@ logger = init_config()
 
 logger.bold("Hello World!")
 ```
-For details on how to configure logger, visit [Settings](#settings---persistent-styling) section
+For details on how to configure logger, visit [Settings](https://github.com/SpotRusherZ/pytermstyle/blob/main/README.md#settings---persistent-styling) section
 
 **Create and configure custom instance of colored logger**
 ```python
@@ -46,7 +46,7 @@ Module supports different ways to style the output:
 * Background & Foreground Colors: Predefined and RGB colors
 
 By default, logger will behave like regular `print` function, until user defines either:
-1) Persistent styling - Define [settings](#settings---persistent-styling) for your instance of the logger that will behave as a new default for logger
+1) Persistent styling - Define [settings](https://github.com/SpotRusherZ/pytermstyle/blob/main/README.md#settings---persistent-styling) for your instance of the logger that will behave as a new default for logger
 2) Single-use styling - Directly call supported styling methods on logging. This way of logging will override any predefined settings for the given call
 
 ### Chaining Styles - Single-use styling
@@ -271,7 +271,7 @@ logging.error("Default error styling")
 If you want to use colors for a specific instance of logger, use `TermStyleFormatter`, a provided subclass of `logging.Formatter`
 
 For both methods of configuration, there is already defined styling for each logging level, if you wish to override default settings, you can provide custom settings object.
-Settings object behaves in a same way as [settings](#settings---persistent-styling), with addition being able to specify each level as a key:
+Settings object behaves in a same way as [settings](https://github.com/SpotRusherZ/pytermstyle/blob/main/README.md#settings---persistent-styling), with addition being able to specify each level as a key:
 
 ```python
 SETTINGS = {
@@ -311,4 +311,4 @@ logging.error("Custom error format")
 
 ### Examples
 
-For complete code examples visit: [examples](examples/) directory
+For complete code examples visit: [examples](https://github.com/SpotRusherZ/pytermstyle/tree/main/examples) directory

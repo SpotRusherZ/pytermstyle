@@ -18,3 +18,4 @@ images/
 dist/
 .*_cache
 .tox
+.pypirc

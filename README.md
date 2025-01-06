@@ -1,12 +1,14 @@
 # pytermstyle
 
-![describe](https://github.com/user-attachments/assets/83e26e6f-78c9-4939-91a9-c024805e4817)
+<img src="media/description.PNG" alt="pytermstyle">
 
 Python module that enables ANSI color formatting for output in terminal
 
 ## Installation
 
-Not published yet.
+```
+python3 -m pip install --upgrade pytermstyle
+```
 
 ## Documentation
 

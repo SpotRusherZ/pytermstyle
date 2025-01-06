@@ -1,12 +1,12 @@
-/examples/ @SpotRZ
-/src/ @SpotRZ
-/media/ @SpotRZ
-/tests/ @SpotRZ
+/examples/ @SpotRZ @SpotRusherZ
+/src/ @SpotRZ @SpotRusherZ
+/media/ @SpotRZ @SpotRusherZ
+/tests/ @SpotRZ @SpotRusherZ
 
-README.md @SpotRZ
-LICENSE @SpotRZ
-pyproject.toml @SpotRZ
-requirements_dev.txt @SpotRZ
-setup.cfg @SpotRZ
-setup.py @SpotRZ
-tox.ini @SpotRZ
+README.md @SpotRZ @SpotRusherZ
+LICENSE @SpotRZ @SpotRusherZ
+pyproject.toml @SpotRZ @SpotRusherZ
+requirements_dev.txt @SpotRZ @SpotRusherZ
+setup.cfg @SpotRZ @SpotRusherZ
+setup.py @SpotRZ @SpotRusherZ
+tox.ini @SpotRZ @SpotRusherZ

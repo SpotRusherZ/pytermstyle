@@ -1,5 +1,9 @@
 # pytermstyle
 
+[![PyPI version](https://img.shields.io/pypi/v/pytermstyle.svg)](https://pypi.org/project/pytermstyle/)
+[![License](https://img.shields.io/pypi/l/pytermstyle.svg)](https://pypi.org/project/pytermstyle/)
+[![Python versions](https://img.shields.io/pypi/pyversions/pytermstyle.svg)](https://pypi.org/project/pytermstyle)
+
 <img src="media/description.PNG" alt="pytermstyle">
 
 Python module that enables ANSI color formatting for output in terminal
